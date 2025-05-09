@@ -143,7 +143,7 @@ class Room {
     }
 
     createCeiling() {
-        const ceiling_texture = this.texture_loader.load('/.Assets/wall_texture.jpg');
+        const ceiling_texture = this.texture_loader.load('./Assets/wall_texture.jpg');
         ceiling_texture.wrapS = THREE.RepeatWrapping;
         ceiling_texture.wrapT = THREE.RepeatWrapping;
         ceiling_texture.repeat.set(this.room_width * 0.2, this.room_length * 0.2);
