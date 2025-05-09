@@ -50,7 +50,7 @@ class Museum {
             this.cache_key = 'museum_art_data_dict';
             this.artworks = {};
 
-            this.clearCache();
+            // this.clearCache();
 
             this.setupLights();
             await this.loadArtworks();
