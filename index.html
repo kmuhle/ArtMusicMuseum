@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Art Music Museum</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        canvas {
+            display: block;
+        }
+        
+        #intro_screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #111;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.5s ease;
+        }
+
+        .intro_content>h1 {
+            font-size: 50px;
+            margin-bottom: 25px;
+            color: #ffd0f8;
+            text-align: center;
+        }
+        
+
+        .intro_content>p{
+            font-size: 20px; 
+            line-height: 2;
+            margin-bottom: 10px;
+            color: #ccc;
+            max-width: 900px;
+            text-align: center;
+        }
+
+        .ui {
+            pointer-events: auto;
+        }
+
+        .ui.static {
+            pointer-events: none;
+        }
+
+        #enter_button {
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #ed90d9, #c659a5);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin-top: 30px;
+            opacity: 1;
+            transform: translateY(2px);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        #enter_button:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, #b2509d, #9c2879);
+        }
+        
+        #enter_button.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+        
+        .visible {
+            opacity: 1 !important;
+        }
+
+
+        #ui_overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+            font-family: 'Montserrat', sans-serif;
+            color: white;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        #year_navigation {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        #year_display_container {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px 40px;
+            border-radius: 50px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        #year_display {
+            font-size: 36px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-align: center;
+            min-width: 100px;
+        }
+
+        .nav_button {
+            pointer-events: auto;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav_button:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.1);
+        }
+
+        #info_button {
+            font-weight: bold;
+            font-style: italic;
+            top: 20px;
+            left: 20px;
+            position: absolute;
+            pointer-events: auto;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 25px;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        #music_player {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 15px;
+            padding: 15px;
+            width: 280px;
+            border-left: 4px solid #f26ed7;
+            pointer-events: auto;
+            backdrop-filter: blur(5px);
+        }
+
+        #music_info {
+            margin-bottom: 10px;
+        }
+
+        #song_rank {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #aaa;
+            margin-bottom: 5px;
+        }
+
+        #song_title {
+            font-size: 16px;
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 5px;
+        }
+
+        #song_artist{
+            font-size: 12px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #898888;
+        }
+
+        #music_controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .music_button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            width: 30px;
+            cursor: pointer;
+            padding: 5px;
+            transition: all 0.2s;
+            pointer-events: auto;
+        }
+
+        .music_button:hover {
+            color: rgb(175, 6, 190);
+            transform: scale(1.1);
+        }
+
+        #volume_control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: auto;
+        }
+
+        #volume_slider {
+            pointer-events: auto;
+            width: 80px;
+            height: 4px;
+            accent-color: #e1189b;
+        }
+
+        #controls_info {
+            position: absolute;
+            bottom: 30px;
+            left: 30px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 12px 15px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-size: 15px;
+        }
+
+        .control_item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        #loading_decade {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: auto;
+            font-size: 50px;
+        }
+
+        #info_pop_up {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: auto;
+            z-index: 200;
+        }
+
+        #info_content {
+            background: #111;
+            padding: 40px;
+            border-radius: 10px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid #333;
+        }
+
+        #info_content h2 {
+            color: #ffcef1;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        #info_content h3 {
+            color: #aaaaaa;
+            margin: 20px 0 5px;
+            font-size: 18px;
+        }
+
+        #info_content h4 {
+            color: #d89bff;
+            margin: 2px 0 10px;
+            font-size: 14px;
+        }
+
+        #info_content p, #info_content ul {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        #info_content a {
+            color: #b578fa;
+            text-decoration: none;
+        }
+
+        #info_content a:hover {
+            text-decoration: underline;
+        }
+
+        #resume_button {
+            display: block;
+            margin: 30px auto 0;
+            background:linear-gradient(135deg, #ed90d9, #c659a5);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        #resume_button:hover {
+            background: linear-gradient(135deg, #b2509d, #9c2879);
+            transform: translateY(-2px);
+        }
+
+        #decade_display {
+            font-size: 14px;
+            text-align: center;
+            color: #aaa;
+            margin-top: 5px;
+        }
+
+        #year_display_container {
+            padding: 10px 30px;
+        }
+
+        .introjs-tooltip {
+            max-width: 600px !important;  
+            min-width: 300px !important;   
+            width: auto !important; 
+            text-align: center;  
+        }
+
+        .introjs-tooltiptext {
+            white-space: normal !important;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="intro_screen" class="intro_content" class="ui">
+        <h1>Welcome to the Virtual Art & Music Museum</h1>
+        <p>Travel through time from 1960 to 2010. Each room showcases iconic artworks alongside a soundtrack of that year's top Billboard hits.</p>
+        <p>You will be able to explore five distinct hallways— one for each decade between 1960 and 2010. Within each hallway, you'll find ten rooms showcasing the art and music of every year in that decade.</p>
+        <p><em>Tip:</em> If this is your first time visiting the museum, loading may take about 1-2 minutes. <br>Loading should be much faster if you visit again another time :)</p>
+        <button id="enter_button" disabled>Loading…</button>
+      </div>
+
+        <div id="ui_overlay" >
+            <button id="info_button" class="ui">i</button>
+            <div id="year_navigation" class="ui">
+                <button id="decade_back_button" class="nav_button">◄◄</button>
+                <button id="year_back_button" class="nav_button">◄</button>
+                <div id="year_display_container" class="ui">
+                    <div id="year_display" class="ui">1960</div>
+                    <div id="decade_display" class="ui">1960s</div>
+                </div>
+                <button id="year_forward_button" class="nav_button">►</button>
+                <button id="decade_forward_button" class="nav_button">►►</button>
+            </div>
+        
+            <div id="music_player" class="ui">
+                <div id="music_info" class="ui">
+                    <div id="song_rank" class="ui">RANK #1</div>
+                    <div id="song_title" class="ui">Loading...</div>
+                    <div id="song_artist" class="ui">Loading...</div>
+                </div>
+                <div id="music_controls" class="ui">
+                    <button id="prev_song_button" class="music_button" class="ui">⏮</button>
+                    <button id="play_pause_button" class="music_button" class="ui">⏸</button>
+                    <button id="next_song_button" class="music_button" class="ui">⏭</button>
+                    <div id="volume_control">
+                        ♫
+                        <input type="range" id="volume_slider" min="0" max="1" step="0.01" value="0.7">
+                    </div>
+                </div>
+            </div>
+        
+            <div id="controls_info" class="ui">
+                <div class="control_item">WASD to move  |  Mouse to look  |  ESC or SPACE to unlock mouse</div>
+            </div>
+        
+            <div id="info_pop_up" class="hidden" class="ui">
+                <div id="info_content">
+                    <h2>Art and Music Museum</h2>
+                    <h4>Created by: Kalyn Muhlenberg</h4>
+                    <p>This is a virtual museum experience showcasing artworks and music from different years between 1960 and 2010.</p>
+                    
+                    <!-- <h3>Created by: Kalyn Muhlenberg</h3> -->
+                    
+                    <h3>Sources</h3>
+                    <ul>
+                        <li>All artworks are from the <a href="https://api.artic.edu/docs/" target="_blank">Art Institute of Chicago API</a></li>
+                        <li>All music is from the <a href="https://developer.apple.com/library/archive/documentation/AudioVideo/Conceptual/iTuneSearchAPI/index.html" target="_blank">ITunes API</a></li>
+                        <li>List of top billboard songs sourced from Patrick5225's <a href="https://github.com/Patrick5225/Billboard-Year-End-Top-Songs/tree/main" target="_blank">Billboard-Year-End-Top-Songs</a> Github repository</li>
+                        <li>Picture frame and plaque textures sourced from <a href="https://www.freepik.com/" target="_blank">Freepik.com</a></li>
+                        <li>Flooring and wall textures sourced from designed by <a href="https://www.cgbookcase.com/" target="_blank">cgbookcase.com</a></li>
+                        
+                    </ul>
+                    
+                    <button id="resume_button">RESUME</button>
+                </div>
+            </div>
+
+            <div id="loading_decade" class="hidden" class="ui">
+                Loading Art for 1960...
+            </div>
+        </div>
+
+    <link rel="stylesheet" href="https://unpkg.com/intro.js/minified/introjs.min.css"/>
+    <script src="https://unpkg.com/intro.js/minified/intro.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/PointerLockControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/renderers/CSS2DRenderer.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
+
+    <script src="js/CollisionDetector.js"></script>
+    <script src="js/Artwork.js"></script>
+    <script src="js/Music.js"></script>
+    <script src="js/Player.js"></script>
+    <script src="js/Room.js"></script>
+    <script src="js/Museum.js"></script>
+
+    <script>
+       const tourSteps = [
+        {
+            intro:
+            '<b>Welcome!</b><br>' +
+            'Explore the evolution of art and music in this virtual museum.<br>' +
+            'Each “hallway” contains ten rooms—one room per year of the decade.<br>' +
+            'Walk through at your own pace, then teleport to any other year or decade.<br>',
+            position: 'floating'
+        },
+        {
+            element: '#info_button',
+            intro: 'Click the <b>info</b> button at any time to view information about the museum (and to pause your experience).'
+        },
+        {
+            element: '#year_display_container',
+            intro:
+            'This shows the <b>year</b> room (top) and the <b>decade</b> hallway (bottom) you are currently in.<br> ' +
+            'You can walk through all ten years in this decade hallway, or jump to another decade.'
+        },
+        {
+            element: '#year_navigation',
+            intro:
+            'The <b>year arrows</b> (◄ and ►) teleport you one year at a time.<br>' +
+            'The <b>decade arrows</b> (◄◄ and ►►) jump you to the next decade.<br><br>' +
+            '<b>IMPORTANT</b><br> You cannot physically walk between decades— use these buttons to move beyond the current hallway.'
+        },
+        {
+            element: '#music_player',
+            intro:
+            'Use the music controls to:<br>' +
+            '• ⏮ / ⏭ skip tracks<br>' +
+            '• ⏸ play / pause<br>' +
+            '• ♫ slider adjust volume'
+        },
+        {
+            element: '#controls_info',
+            intro:
+            'Movement keys: <b>WASD</b><br>' +
+            'Look around: <b>mouse</b><br>' +
+            'Unlock cursor: <b>ESC</b> or <b>Space</b>'
+        },
+        {
+            intro:
+            'To explore the 3D space, click inside the view to lock your mouse so you can look around.<br><br>' +
+            '<b>IMPORTANT:</b> <br>' + 
+            'When you need to click UI buttons, press <b>ESC</b> or <b>Space</b> to unlock.',
+            position: 'floating'
+        }
+        ];
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const enterButton = document.getElementById('enter_button');
+            const introScreen = document.getElementById('intro_screen');
+            const loading_decade = document.getElementById('loading_decade');
+            
+            const year_back = document.getElementById('year_back_button');
+            const year_forward = document.getElementById('year_forward_button');
+            const info_pop_up = document.getElementById('info_pop_up');
+            const info_button = document.getElementById('info_button');
+            const resume_button = document.getElementById('resume_button');
+            const decade_back = document.getElementById('decade_back_button');
+            const decade_forward = document.getElementById('decade_forward_button');
+            
+            const museum = new Museum();
+            
+            await museum.setUpMuseum();
+            museum.paused = true;
+
+            console.log("Museum set up!")
+            
+            enterButton.textContent = "Enter Museum";
+            enterButton.classList.add('active');
+            enterButton.disabled = false;
+            
+            enterButton.addEventListener('click', () => {
+                
+                introScreen.style.opacity = '0';
+                info_button.classList.remove('hidden');
+                introScreen.classList.add('hidden');
+                intro.start();
+            });
+
+            info_button.addEventListener('click', () => {
+                museum.pause();
+                info_pop_up.classList.remove('hidden');
+            });
+
+            resume_button.addEventListener('click', () => {
+                museum.pause();
+                info_pop_up.classList.add('hidden');
+            });
+            
+            year_back.addEventListener('click', async () => museum.change_year(-1));
+            year_forward.addEventListener('click', async () => museum.change_year(1));
+            decade_back.addEventListener('click', async () => {
+                await museum.prevDecade();
+                loading_decade.classList.add('hidden');
+            });
+            decade_forward.addEventListener('click', async () => {
+                await museum.nextDecade();
+                loading_decade.classList.add('hidden');
+            });
+
+            const intro = introJs();
+            intro.setOptions({
+                steps: tourSteps,
+                showProgress: false,
+                disableInteraction: true,
+                nextLabel: 'Next ►',
+                prevLabel: '◄ Back',
+                doneLabel: 'Finish'
+            })
+            .oncomplete(() => {
+                museum.music_player.play();
+                museum.paused = false;
+            })
+            .onexit(() => {
+                museum.music_player.play();
+                museum.paused = false;
+            });
+        });
+    </script>
+</body>
+</html>
