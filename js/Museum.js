@@ -88,7 +88,7 @@ class Museum {
     }
 
 
-    async getArtworksByYear(year, limit = 100) {
+    async getArtworksByYear(year, limit = 60) {
         let artworks = [];
         let unique_artworks = [];
         const query = {
