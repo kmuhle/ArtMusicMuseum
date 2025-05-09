@@ -47,7 +47,7 @@ class Artwork {
     }
 
     loadFrameTexture() {
-        const frame_url = '/Assets/gold_frame.png';
+        const frame_url = './Assets/gold_frame.png';
         return new Promise(resolve => {
             this.texture_loader.load(frame_url, texture => {
                 const geo = new THREE.PlaneGeometry(
@@ -66,7 +66,7 @@ class Artwork {
 
     async createLabel() {
         const plaqueTexture = await new Promise(resolve => {
-            new THREE.TextureLoader().load('/Assets/plaque.png', resolve);
+            new THREE.TextureLoader().load('./Assets/plaque.png', resolve);
         });
 
         const canvas = document.createElement('canvas');
