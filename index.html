@@ -355,6 +355,23 @@
             transition: all 0.2s;
         }
 
+        #cache_button {
+            display: block;
+            margin: 30px auto 0;
+            top: 20px;
+            right: 20px;
+            position: absolute;
+            background:rgb(255, 62, 75);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
         #resume_button:hover {
             background: linear-gradient(135deg, #b2509d, #9c2879);
             transform: translateY(-2px);
@@ -429,6 +446,7 @@
         
             <div id="info_pop_up" class="hidden" class="ui">
                 <div id="info_content">
+                    <button id="cache_button"><em>Clear Art Cache & Reload</em></button>
                     <h2>Art and Music Museum</h2>
                     <h4>Created by: Kalyn Muhlenberg</h4>
                     <p>This is a virtual museum experience showcasing artworks and music from different years between 1960 and 2010.</p>
@@ -530,6 +548,8 @@
             const info_pop_up = document.getElementById('info_pop_up');
             const info_button = document.getElementById('info_button');
             const resume_button = document.getElementById('resume_button');
+            const cache_button = document.getElementById('cache_button');
+            
             const decade_back = document.getElementById('decade_back_button');
             const decade_forward = document.getElementById('decade_forward_button');
             
@@ -560,6 +580,11 @@
             resume_button.addEventListener('click', () => {
                 museum.pause();
                 info_pop_up.classList.add('hidden');
+            });
+
+            cache_button.addEventListener('click', () => {
+                museum.clearCache();
+                window.location.reload(true);
             });
             
             year_back.addEventListener('click', async () => museum.change_year(-1));

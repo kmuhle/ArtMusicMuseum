@@ -50,7 +50,7 @@ class Museum {
             this.cache_key = 'museum_art_data_dict';
             this.artworks = {};
 
-            // this.clearCache();
+            this.clearCache();
 
             this.setupLights();
             await this.loadArtworks();
@@ -119,7 +119,8 @@ class Museum {
         try {
             const response = await fetch("https://api.artic.edu/api/v1/artworks/search", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                mode: "cors",    
+                headers: { "Content-Type": "application/json"},
                 body: JSON.stringify(query)
             });
     
