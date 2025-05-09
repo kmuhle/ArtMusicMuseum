@@ -45,7 +45,7 @@ class Room {
     createWall(x_pos, z_pos, width, height, rotation_y, y_pos = this.room_height/2) {
         const geometry = new THREE.PlaneGeometry(width, height);
         
-        const texture = this.texture_loader.load('/Assets/wall_texture.jpg');
+        const texture = this.texture_loader.load('./Assets/wall_texture.jpg');
         texture.wrapS = THREE.RepeatWrapping;
         texture.wrapT = THREE.RepeatWrapping;
         texture.repeat.set(width * this.texture_scale, height * this.texture_scale);
@@ -126,7 +126,7 @@ class Room {
     }
 
     createFloor() {
-        const floor_texture = this.texture_loader.load('/Assets/floor_texture.png');
+        const floor_texture = this.texture_loader.load('./Assets/floor_texture.png');
         floor_texture.wrapS = THREE.RepeatWrapping;
         floor_texture.wrapT = THREE.RepeatWrapping;
         floor_texture.repeat.set(this.room_width * 0.2, this.room_length * 0.2);
@@ -143,7 +143,7 @@ class Room {
     }
 
     createCeiling() {
-        const ceiling_texture = this.texture_loader.load('/Assets/wall_texture.jpg');
+        const ceiling_texture = this.texture_loader.load('/.Assets/wall_texture.jpg');
         ceiling_texture.wrapS = THREE.RepeatWrapping;
         ceiling_texture.wrapT = THREE.RepeatWrapping;
         ceiling_texture.repeat.set(this.room_width * 0.2, this.room_length * 0.2);
