@@ -120,7 +120,7 @@ class Museum {
             const response = await fetch("https://api.artic.edu/api/v1/artworks/search", {
                 method: "POST",
                 mode: "cors",    
-                headers: { "Content-Type": "application/json"},
+                headers: { "Content-Type": "application/json", "Accept": "application/json"},
                 body: JSON.stringify(query)
             });
     
