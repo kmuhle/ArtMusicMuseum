@@ -96,8 +96,8 @@ class Player {
             if (this.move_left || this.move_right)
                 this.velocity.x -= this.direction.x * this.speed * delta;
 
-            this.controls.move_right(-this.velocity.x * delta);
-            this.controls.move_forward(-this.velocity.z * delta);
+            this.controls.moveRight(-this.velocity.x * delta);
+            this.controls.moveForward(-this.velocity.z * delta);
             this.player_obj.position.y += (this.velocity.y * delta);
 
             player.position.x = Math.max(-7, Math.min(7, player.position.x)); 
