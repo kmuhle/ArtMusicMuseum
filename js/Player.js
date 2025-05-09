@@ -96,7 +96,7 @@ class Player {
             if (this.move_left || this.move_right)
                 this.velocity.x -= this.direction.x * this.speed * delta;
 
-            this.controls.move_right  (-this.velocity.x * delta);
+            this.controls.move_right(-this.velocity.x * delta);
             this.controls.move_forward(-this.velocity.z * delta);
             this.player_obj.position.y += (this.velocity.y * delta);
 
