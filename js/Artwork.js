@@ -7,6 +7,7 @@ class Artwork {
         this.position = position;
         this.rotation = rotation;
         this.texture_loader = texture_loader;
+        this.texture_loader.setCrossOrigin('anonymous');
 
         this.addArtWork();
     }
