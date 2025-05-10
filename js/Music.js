@@ -1,7 +1,7 @@
 class MusicPlayer {
     constructor() {
         this.songs = {};
-        this.song_csv = 'Assets/songs.csv';
+        this.song_csv = '/Assets/songs.csv';
 
         
         this.curr_year = null;
@@ -231,7 +231,7 @@ class MusicPlayer {
     updateSongInfo(track) {
         this.song_title_elem.textContent = track.title;
         this.song_artist_elem.textContent = track.artist;
-        this.song_rank_elem.textContent = `Rank #${track.rank}`;
+        this.song_rank_elem.textContent = `${this.curr_year}— Rank #${track.rank}`;
     }
 
 }
