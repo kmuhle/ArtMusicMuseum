@@ -1,7 +1,7 @@
 class MusicPlayer {
     constructor() {
         this.songs = {};
-        this.song_csv = '/Assets/songs.csv';
+        this.song_csv = 'Assets/songs.csv';
 
         
         this.curr_year = null;
